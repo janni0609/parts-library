@@ -330,6 +330,15 @@ button[type="submit"] {
   max-width: 40rem;
 }
 
+.success-banner {
+  background: rgba(22, 163, 74, 0.1);
+  border: 1px solid #16a34a;
+  color: #16a34a;
+  padding: 0.6rem 0.9rem;
+  border-radius: 4px;
+  max-width: 40rem;
+}
+
 .cat-name-cell .tree-marker {
   color: var(--muted);
   margin-right: 0.1rem;
@@ -347,4 +356,27 @@ button[type="submit"] {
 
 .add-category-form {
   margin-bottom: 1rem;
+}
+
+/* CSV import preview */
+.import-table {
+  table-layout: auto;
+  margin-bottom: 1rem;
+}
+
+.import-table th,
+.import-table td {
+  padding: 0.4rem 0.6rem;
+}
+
+.import-row-error {
+  background: rgba(220, 38, 38, 0.08);
+}
+
+.import-row-insert {
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.import-row-update {
+  background: rgba(37, 99, 235, 0.06);
 }

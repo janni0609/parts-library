@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Import preview</h2>
+
+<p>
+  {{ counts.insert }} new part(s), {{ counts['update'] }} update(s),
+  {{ counts.error }} row(s) skipped due to errors.
+</p>
+
+<form method="post" action="/import/confirm">
+  <input type="hidden" name="token" value="{{ token }}">
+
+  {% if unknown_categories %}
+  <h3>Unrecognized categories</h3>
+  <p>These category names from the CSV don't match any existing category. Choose what to do with each:</p>
+  <table class="categories-table">
+    <thead>
+      <tr>
+        <th>CSV category</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for name in unknown_categories %}
+      <tr>
+        <td>{{ name }}</td>
+        <td>
+          <input type="hidden" name="unknown_name" value="{{ name }}">
+          <select name="category_choice">
+            <option value="__new__">Create new category "{{ name }}"</option>
+            <option value="">— leave uncategorized —</option>
+            {% for c in category_options %}
+            <option value="{{ c.id }}">{{ "↳ " if c.depth else "" }}{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <h3>Rows</h3>
+  <table class="import-table">
+    <thead>
+      <tr>
+        <th>Row</th>
+        <th>Action</th>
+        <th>Article #</th>
+        <th>Description</th>
+        <th>Changes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr class="import-row-{{ row.action }}">
+        <td>{{ row.row_num }}</td>
+        <td>{{ row.action }}</td>
+        <td>{{ row.article_number }}</td>
+        <td>{{ row.description }}</td>
+        <td>
+          {% if row.action == "error" %}
+            {{ row.errors|join("; ") }}
+          {% else %}
+            {{ row.changes|join(", ") }}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="form-actions">
+    <button type="submit" {% if counts.insert == 0 and counts['update'] == 0 %}disabled{% endif %}>
+      Import {{ counts.insert + counts['update'] }} row(s)
+    </button>
+    <a href="/import" class="button-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

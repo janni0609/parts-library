@@ -1,0 +1,2 @@
+article_number,manufacturer,description,category,package,location,quantity,purchase_price,currency,datasheet_url,notes
+LM358N,Texas Instruments,Dual operational amplifier,Opamps,DIP-8,Drawer A3,10,0.45,EUR,https://www.ti.com/lit/ds/symlink/lm358.pdf,General purpose dual op-amp

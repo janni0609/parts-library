@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Import parts from CSV</h2>
+
+{% if done %}
+<p class="success-banner">Import complete — {{ inserted }} new part(s) added, {{ updated }} existing part(s) updated.</p>
+{% endif %}
+{% if expired %}
+<p class="error-banner">That import session expired or was already used. Please upload the file again.</p>
+{% endif %}
+{% if error %}
+<p class="error-banner">{{ error }}</p>
+{% endif %}
+
+<p>
+  Upload a CSV file using the
+  <a href="/static/import_template.csv" download>import template</a> columns:
+  <code>article_number, manufacturer, description, category, package, location,
+  quantity, purchase_price, currency, datasheet_url, notes</code>.
+</p>
+<p>
+  Rows are matched by <code>article_number</code>: if a part with that number
+  already exists, its quantity is increased by the CSV amount and any other
+  filled-in fields are updated; otherwise a new part is created. Category
+  names that don't match an existing category are flagged so you can map or
+  create them. You'll see a full preview before anything is saved.
+</p>
+
+<form method="post" action="/import" enctype="multipart/form-data" class="inline-form">
+  <input type="file" name="file" accept=".csv,text/csv" required>
+  <button type="submit">Preview import</button>
+</form>
+
+<p><a href="/">&larr; Back to parts</a></p>
+{% endblock %}

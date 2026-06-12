@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import ValidationError
 from sqlmodel import Session
 
-from ..category_tree import load_categories, ordered_with_depth
+from ..category_tree import flattened_with_depth
 from ..database import get_session
 from ..models import Category, Part, utcnow
 from ..schemas import PartCreate
@@ -30,14 +30,6 @@ EMPTY_PART = {
     "datasheet_url": None,
     "notes": None,
 }
-
-
-def _categories(session: Session):
-    """Categories as {id, name, depth} in hierarchical display order."""
-    return [
-        {"id": cat.id, "name": cat.name, "depth": depth}
-        for cat, depth in ordered_with_depth(load_categories(session))
-    ]
 
 
 def _empty_to_none(value: str) -> Optional[str]:
@@ -120,7 +112,7 @@ def new_part_form(request: Request, session: Session = Depends(get_session)):
     return templates.TemplateResponse(
         request,
         "parts/form.html",
-        {"mode": "create", "part": EMPTY_PART, "categories": _categories(session), "errors": {}},
+        {"mode": "create", "part": EMPTY_PART, "categories": flattened_with_depth(session), "errors": {}},
     )
 
 
@@ -134,7 +126,7 @@ async def create_part(request: Request, session: Session = Depends(get_session))
         return templates.TemplateResponse(
             request,
             "parts/form.html",
-            {"mode": "create", "part": {**EMPTY_PART, **data}, "categories": _categories(session), "errors": errors},
+            {"mode": "create", "part": {**EMPTY_PART, **data}, "categories": flattened_with_depth(session), "errors": errors},
             status_code=422,
         )
 
@@ -152,7 +144,7 @@ def edit_part_form(request: Request, part_id: int, session: Session = Depends(ge
     return templates.TemplateResponse(
         request,
         "parts/form.html",
-        {"mode": "edit", "part": part, "categories": _categories(session), "errors": {}},
+        {"mode": "edit", "part": part, "categories": flattened_with_depth(session), "errors": {}},
     )
 
 
@@ -170,7 +162,7 @@ async def update_part(request: Request, part_id: int, session: Session = Depends
         return templates.TemplateResponse(
             request,
             "parts/form.html",
-            {"mode": "edit", "part": {**data, "id": part_id}, "categories": _categories(session), "errors": errors},
+            {"mode": "edit", "part": {**data, "id": part_id}, "categories": flattened_with_depth(session), "errors": errors},
             status_code=422,
         )
 

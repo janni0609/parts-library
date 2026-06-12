@@ -56,6 +56,14 @@ def ordered_with_depth(categories: list[Category]) -> list[tuple[Category, int]]
     return ordered
 
 
+def flattened_with_depth(session: Session) -> list[dict]:
+    """Categories as {id, name, depth} dicts in hierarchical display order."""
+    return [
+        {"id": cat.id, "name": cat.name, "depth": depth}
+        for cat, depth in ordered_with_depth(load_categories(session))
+    ]
+
+
 def descendant_ids(categories: list[Category], category_id: int) -> set[int]:
     """The category itself plus the ids of its direct children."""
     ids = {category_id}
