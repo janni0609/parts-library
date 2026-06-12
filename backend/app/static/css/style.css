@@ -1,0 +1,168 @@
+:root {
+  color-scheme: light dark;
+  --border: #d0d0d0;
+  --muted: #777;
+  --accent: #2563eb;
+  --out-of-stock-bg: rgba(220, 38, 38, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0 1rem 2rem;
+  line-height: 1.4;
+}
+
+.topbar {
+  padding: 1rem 0 0.5rem;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.topbar a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Filter bar */
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  background: Canvas;
+  padding: 0.5rem 0;
+  z-index: 10;
+}
+
+#filters input[type="search"] {
+  flex: 1 1 16rem;
+  padding: 0.4rem 0.6rem;
+}
+
+#filters select {
+  padding: 0.4rem 0.6rem;
+}
+
+#filters input,
+#filters select {
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: Field;
+  color: FieldText;
+}
+
+.reset-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.reset-link:hover {
+  text-decoration: underline;
+}
+
+/* Category groups */
+.category-group {
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.category-group summary {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  background: color-mix(in srgb, Canvas 92%, CanvasText 8%);
+  list-style: none;
+}
+
+.category-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.category-group summary::before {
+  content: "\25B8";
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.1s ease;
+}
+
+.category-group[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.category-group .count {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+th {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+tbody tr:hover {
+  background: color-mix(in srgb, Canvas 95%, CanvasText 5%);
+}
+
+tr.out-of-stock {
+  background: var(--out-of-stock-bg);
+}
+
+tr.out-of-stock td {
+  color: var(--muted);
+}
+
+.qty-col {
+  width: 4.5rem;
+}
+
+.qty-input {
+  width: 4rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: Field;
+  color: FieldText;
+  font-size: 0.95rem;
+}
+
+.qty-input:focus {
+  outline: 2px solid var(--accent);
+}
+
+.empty {
+  color: var(--muted);
+  padding: 1rem 0;
+}

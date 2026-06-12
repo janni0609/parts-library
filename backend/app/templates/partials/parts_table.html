@@ -1,0 +1,37 @@
+{% if groups %}
+  {% for group in groups %}
+  <details class="category-group" open>
+    <summary>{{ group.name }} <span class="count">({{ group.parts|length }})</span></summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Article #</th>
+          <th>Manufacturer</th>
+          <th>Description</th>
+          <th>Package</th>
+          <th>Location</th>
+          <th class="qty-col">Qty</th>
+          <th>Price</th>
+          <th>Datasheet</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for part in group.parts %}
+        <tr class="{{ 'out-of-stock' if part.quantity == 0 else '' }}">
+          <td>{{ part.article_number }}</td>
+          <td>{{ part.manufacturer or "" }}</td>
+          <td>{{ part.description }}</td>
+          <td>{{ part.package or "" }}</td>
+          <td>{{ part.location or "" }}</td>
+          <td class="qty-col">{% include "partials/quantity_cell.html" %}</td>
+          <td>{% if part.purchase_price is not none %}{{ "%.4f"|format(part.purchase_price)|trimzeros }} {{ part.currency or "" }}{% endif %}</td>
+          <td>{% if part.datasheet_url %}<a href="{{ part.datasheet_url }}" target="_blank" rel="noopener">Datasheet</a>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  {% endfor %}
+{% else %}
+  <p class="empty">No parts found.</p>
+{% endif %}

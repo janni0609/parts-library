@@ -1,0 +1,10 @@
+<input
+  type="number"
+  name="quantity"
+  class="qty-input"
+  min="0"
+  value="{{ part.quantity }}"
+  hx-patch="/ui/parts/{{ part.id }}/quantity"
+  hx-trigger="change"
+  hx-swap="outerHTML"
+>

@@ -3,9 +3,11 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from .database import init_db
-from .routers import categories, parts
+from .routers import categories, parts, ui
+from .templating import STATIC_DIR
 
 
 @asynccontextmanager
@@ -16,8 +18,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Parts Library", version="0.1.0", lifespan=lifespan)
 
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
 app.include_router(categories.router)
 app.include_router(parts.router)
+app.include_router(ui.router)
 
 
 @app.get("/api/health", tags=["meta"])

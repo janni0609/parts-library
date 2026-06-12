@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form id="filters"
+      hx-get="/ui/parts"
+      hx-target="#parts-table"
+      hx-swap="innerHTML"
+      hx-trigger="input changed delay:300ms from:#search, change from:select">
+  <input type="search" id="search" name="q" placeholder="Search article number, description, manufacturer..."
+         value="{{ q }}" autocomplete="off">
+
+  <select name="category_id">
+    <option value="">All categories</option>
+    {% for c in categories %}
+    <option value="{{ c.id }}" {% if category_id == c.id|string %}selected{% endif %}>
+      {{ c.name }} ({{ c.part_count }})
+    </option>
+    {% endfor %}
+    <option value="none" {% if category_id == "none" %}selected{% endif %}>Uncategorized</option>
+  </select>
+
+  <select name="in_stock">
+    <option value="">All stock levels</option>
+    <option value="true" {% if in_stock == "true" %}selected{% endif %}>In stock</option>
+    <option value="false" {% if in_stock == "false" %}selected{% endif %}>Out of stock</option>
+  </select>
+
+  <a href="/" class="reset-link">Reset</a>
+</form>
+
+<div id="parts-table">
+  {% include "partials/parts_table.html" %}
+</div>
+{% endblock %}
