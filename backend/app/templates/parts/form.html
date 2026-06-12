@@ -32,7 +32,7 @@
     <select id="category_id" name="category_id">
       <option value="">— none —</option>
       {% for c in categories %}
-      <option value="{{ c.id }}" {% if part.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+      <option value="{{ c.id }}" {% if part.category_id == c.id %}selected{% endif %}>{{ "↳ " if c.depth else "" }}{{ c.name }}</option>
       {% endfor %}
     </select>
     {% if errors.category_id %}<span class="field-error">{{ errors.category_id }}</span>{% endif %}

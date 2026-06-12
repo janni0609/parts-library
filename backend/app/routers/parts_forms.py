@@ -5,8 +5,9 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import ValidationError
-from sqlmodel import Session, select
+from sqlmodel import Session
 
+from ..category_tree import load_categories, ordered_with_depth
 from ..database import get_session
 from ..models import Category, Part, utcnow
 from ..schemas import PartCreate
@@ -32,7 +33,11 @@ EMPTY_PART = {
 
 
 def _categories(session: Session):
-    return session.exec(select(Category).order_by(Category.name)).all()
+    """Categories as {id, name, depth} in hierarchical display order."""
+    return [
+        {"id": cat.id, "name": cat.name, "depth": depth}
+        for cat, depth in ordered_with_depth(load_categories(session))
+    ]
 
 
 def _empty_to_none(value: str) -> Optional[str]:

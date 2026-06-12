@@ -9,39 +9,63 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Parent</th>
       <th>Parts</th>
-      <th>Actions</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     {% for c in categories %}
-    <tr>
-      <td>
-        <form method="post" action="/categories/{{ c.id }}/rename" class="inline-form">
+    <tr class="{{ 'is-sub' if c.depth else '' }}">
+      <td class="cat-name-cell">
+        <form method="post" action="/categories/{{ c.id }}/edit" id="edit-{{ c.id }}" class="inline-form">
+          {% if c.depth %}<span class="tree-marker">↳</span>{% endif %}
           <input type="text" name="name" value="{{ c.name }}" required maxlength="100">
-          <button type="submit">Rename</button>
         </form>
       </td>
-      <td>{{ c.part_count }}</td>
       <td>
+        {% if c.has_children %}
+          <span class="muted">— top level —</span>
+          <input type="hidden" name="parent_id" value="" form="edit-{{ c.id }}">
+        {% else %}
+          <select name="parent_id" form="edit-{{ c.id }}">
+            <option value="">— top level —</option>
+            {% for p in top_level %}
+              {% if p.id != c.id %}
+              <option value="{{ p.id }}" {% if c.parent_id == p.id %}selected{% endif %}>{{ p.name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        {% endif %}
+      </td>
+      <td>{{ c.part_count }}</td>
+      <td class="cat-actions">
+        <button type="submit" form="edit-{{ c.id }}">Save</button>
         <form method="post" action="/categories/{{ c.id }}/delete" class="inline-form"
               onsubmit="return confirm('Delete category {{ c.name }}?')">
           <button type="submit" class="button-danger"
-                  {% if c.part_count > 0 %}disabled title="In use by {{ c.part_count }} part(s)"{% endif %}>
+                  {% if c.part_count > 0 or c.has_children %}disabled
+                  title="{% if c.part_count > 0 %}In use by {{ c.part_count }} part(s){% else %}Has subcategories{% endif %}"{% endif %}>
             Delete
           </button>
         </form>
       </td>
     </tr>
     {% else %}
-    <tr><td colspan="3" class="empty">No categories yet.</td></tr>
+    <tr><td colspan="4" class="empty">No categories yet.</td></tr>
     {% endfor %}
   </tbody>
 </table>
 
 <h3>Add category</h3>
-<form method="post" action="/categories" class="inline-form">
+<form method="post" action="/categories" class="inline-form add-category-form">
   <input type="text" name="name" placeholder="Category name" required maxlength="100">
+  <select name="parent_id">
+    <option value="">— top level —</option>
+    {% for p in top_level %}
+    <option value="{{ p.id }}">under {{ p.name }}</option>
+    {% endfor %}
+  </select>
   <button type="submit">Add</button>
 </form>
 

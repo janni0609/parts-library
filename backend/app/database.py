@@ -29,11 +29,28 @@ def _enable_sqlite_fk(dbapi_connection, connection_record) -> None:
 
 
 def init_db() -> None:
-    """Create tables if they don't exist yet."""
+    """Create tables if they don't exist yet, then apply lightweight migrations."""
     # Import models so they register on SQLModel.metadata before create_all.
     from . import models  # noqa: F401
 
     SQLModel.metadata.create_all(engine)
+    _run_migrations()
+
+
+def _run_migrations() -> None:
+    """Tiny in-place migrations for schema changes on existing databases.
+
+    SQLModel.create_all only creates missing tables; it never alters existing
+    ones. Each migration here is idempotent (checks before applying).
+    """
+    with engine.connect() as conn:
+        category_cols = {
+            row[1] for row in conn.exec_driver_sql("PRAGMA table_info(categories)")
+        }
+        # Subcategory support: add the self-referencing parent_id column.
+        if "parent_id" not in category_cols:
+            conn.exec_driver_sql("ALTER TABLE categories ADD COLUMN parent_id INTEGER")
+            conn.commit()
 
 
 def get_session() -> Iterator[Session]:

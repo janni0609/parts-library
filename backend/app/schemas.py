@@ -16,15 +16,18 @@ NAME_MAX = 100
 # --------------------------------------------------------------------------- #
 class CategoryCreate(BaseModel):
     name: str = Field(min_length=1, max_length=NAME_MAX)
+    parent_id: Optional[int] = None
 
 
 class CategoryUpdate(BaseModel):
     name: str = Field(min_length=1, max_length=NAME_MAX)
+    parent_id: Optional[int] = None
 
 
 class CategoryRead(BaseModel):
     id: int
     name: str
+    parent_id: Optional[int] = None
     part_count: int = 0
 
 

@@ -12,9 +12,7 @@
   <select name="category_id">
     <option value="">All categories</option>
     {% for c in categories %}
-    <option value="{{ c.id }}" {% if category_id == c.id|string %}selected{% endif %}>
-      {{ c.name }} ({{ c.part_count }})
-    </option>
+    <option value="{{ c.id }}" {% if category_id == c.id|string %}selected{% endif %}>{{ "↳ " if c.depth else "" }}{{ c.name }} ({{ c.part_count }})</option>
     {% endfor %}
     <option value="none" {% if category_id == "none" %}selected{% endif %}>Uncategorized</option>
   </select>

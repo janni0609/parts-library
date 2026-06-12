@@ -1,7 +1,7 @@
 {% if groups %}
   {% for group in groups %}
-  <details class="category-group" open>
-    <summary>{{ group.name }} <span class="count">({{ group.parts|length }})</span></summary>
+  <details class="category-group {{ 'subcategory' if group.level == 1 else '' }}" open>
+    <summary>{% if group.parent_name %}<span class="crumb">{{ group.parent_name }} ›</span> {% endif %}{{ group.name }} <span class="count">({{ group.parts|length }})</span></summary>
     <table>
       <colgroup>
         <col class="col-article">

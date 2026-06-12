@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlmodel import Session, select
 
+from ..category_tree import has_children, validate_parent
 from ..database import get_session
 from ..models import Category, Part
 from ..schemas import CategoryCreate, CategoryRead, CategoryUpdate
@@ -38,7 +39,10 @@ def create_category(payload: CategoryCreate, session: Session = Depends(get_sess
         raise HTTPException(
             status.HTTP_409_CONFLICT, f"Category '{name}' already exists"
         )
-    category = Category(name=name)
+    parent_error = validate_parent(session, payload.parent_id)
+    if parent_error:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, parent_error)
+    category = Category(name=name, parent_id=payload.parent_id)
     session.add(category)
     session.commit()
     session.refresh(category)
@@ -70,7 +74,11 @@ def update_category(
         raise HTTPException(
             status.HTTP_409_CONFLICT, f"Category '{name}' already exists"
         )
+    parent_error = validate_parent(session, payload.parent_id, category_id)
+    if parent_error:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, parent_error)
     category.name = name
+    category.parent_id = payload.parent_id
     session.add(category)
     session.commit()
     session.refresh(category)
@@ -88,6 +96,12 @@ def delete_category(category_id: int, session: Session = Depends(get_session)):
             status.HTTP_409_CONFLICT,
             f"Cannot delete '{category.name}': {count} part(s) still use it. "
             "Reassign or remove them first.",
+        )
+    if has_children(session, category_id):
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"Cannot delete '{category.name}': it still has subcategories. "
+            "Delete or move them first.",
         )
     session.delete(category)
     session.commit()

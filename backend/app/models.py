@@ -25,6 +25,11 @@ class Category(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True, unique=True)
+    # Self-reference: NULL = top-level category, set = subcategory of that parent.
+    # Limited to one level deep (a subcategory cannot itself have children).
+    parent_id: Optional[int] = Field(
+        default=None, foreign_key="categories.id", index=True
+    )
 
 
 class Part(SQLModel, table=True):

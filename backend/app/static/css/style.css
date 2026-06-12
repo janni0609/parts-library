@@ -131,6 +131,17 @@ body {
   font-size: 0.9rem;
 }
 
+/* Subcategory group: lighter header + breadcrumb to its parent */
+.category-group.subcategory summary {
+  padding-left: 1.75rem;
+  font-weight: 500;
+}
+
+.category-group .crumb {
+  color: var(--muted);
+  font-weight: 400;
+}
+
 /* Table */
 table {
   width: 100%;
@@ -287,7 +298,7 @@ button[type="submit"] {
 .categories-table {
   width: auto;
   table-layout: auto;
-  max-width: 40rem;
+  max-width: 52rem;
 }
 
 .categories-table th,
@@ -317,4 +328,23 @@ button[type="submit"] {
   padding: 0.6rem 0.9rem;
   border-radius: 4px;
   max-width: 40rem;
+}
+
+.cat-name-cell .tree-marker {
+  color: var(--muted);
+  margin-right: 0.1rem;
+}
+
+.cat-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.add-category-form {
+  margin-bottom: 1rem;
 }
