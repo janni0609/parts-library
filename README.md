@@ -13,3 +13,5 @@ to add parts to the lib, if possible i whant to be able to take a picture with t
 i have a raspberry pi 5 that runs all the time. if possible the lib should be stored there. 
 i dont know if a webserver is the ideal ui for this project. if yes it should run on the raspberry pi for now.
 
+it should not be to comlicated. i will never have more then 1000 different parts.
+
