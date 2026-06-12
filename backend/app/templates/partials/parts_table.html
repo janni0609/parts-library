@@ -3,6 +3,17 @@
   <details class="category-group" open>
     <summary>{{ group.name }} <span class="count">({{ group.parts|length }})</span></summary>
     <table>
+      <colgroup>
+        <col class="col-article">
+        <col class="col-manufacturer">
+        <col class="col-description">
+        <col class="col-package">
+        <col class="col-location">
+        <col class="col-qty">
+        <col class="col-price">
+        <col class="col-datasheet">
+        <col class="col-actions">
+      </colgroup>
       <thead>
         <tr>
           <th>Article #</th>
@@ -10,9 +21,10 @@
           <th>Description</th>
           <th>Package</th>
           <th>Location</th>
-          <th class="qty-col">Qty</th>
+          <th>Qty</th>
           <th>Price</th>
           <th>Datasheet</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -23,9 +35,10 @@
           <td>{{ part.description }}</td>
           <td>{{ part.package or "" }}</td>
           <td>{{ part.location or "" }}</td>
-          <td class="qty-col">{% include "partials/quantity_cell.html" %}</td>
+          <td>{% include "partials/quantity_cell.html" %}</td>
           <td>{% if part.purchase_price is not none %}{{ "%.4f"|format(part.purchase_price)|trimzeros }} {{ part.currency or "" }}{% endif %}</td>
           <td>{% if part.datasheet_url %}<a href="{{ part.datasheet_url }}" target="_blank" rel="noopener">Datasheet</a>{% endif %}</td>
+          <td><a href="/parts/{{ part.id }}/edit">Edit</a></td>
         </tr>
         {% endfor %}
       </tbody>

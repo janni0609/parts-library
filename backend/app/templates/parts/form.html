@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ "Add Part" if mode == "create" else "Edit Part" }}</h2>
+
+<form method="post"
+      action="{{ '/parts/new' if mode == 'create' else '/parts/' ~ part.id ~ '/edit' }}"
+      class="part-form">
+  <div class="form-row">
+    <label for="article_number">Article number *</label>
+    <input type="text" id="article_number" name="article_number" required maxlength="100"
+           value="{{ part.article_number or '' }}">
+    {% if errors.article_number %}<span class="field-error">{{ errors.article_number }}</span>{% endif %}
+  </div>
+
+  <div class="form-row">
+    <label for="manufacturer">Manufacturer</label>
+    <input type="text" id="manufacturer" name="manufacturer" maxlength="100"
+           value="{{ part.manufacturer or '' }}">
+    {% if errors.manufacturer %}<span class="field-error">{{ errors.manufacturer }}</span>{% endif %}
+  </div>
+
+  <div class="form-row form-row-wide">
+    <label for="description">Description *</label>
+    <input type="text" id="description" name="description" required maxlength="500"
+           value="{{ part.description or '' }}">
+    {% if errors.description %}<span class="field-error">{{ errors.description }}</span>{% endif %}
+  </div>
+
+  <div class="form-row">
+    <label for="category_id">Category</label>
+    <select id="category_id" name="category_id">
+      <option value="">— none —</option>
+      {% for c in categories %}
+      <option value="{{ c.id }}" {% if part.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+    {% if errors.category_id %}<span class="field-error">{{ errors.category_id }}</span>{% endif %}
+  </div>
+
+  <div class="form-row">
+    <label for="package">Package</label>
+    <input type="text" id="package" name="package" maxlength="50"
+           value="{{ part.package or '' }}">
+    {% if errors.package %}<span class="field-error">{{ errors.package }}</span>{% endif %}
+  </div>
+
+  <div class="form-row">
+    <label for="location">Location</label>
+    <input type="text" id="location" name="location" maxlength="100"
+           value="{{ part.location or '' }}">
+    {% if errors.location %}<span class="field-error">{{ errors.location }}</span>{% endif %}
+  </div>
+
+  <div class="form-row">
+    <label for="quantity">Quantity</label>
+    <input type="number" id="quantity" name="quantity" min="0" step="1"
+           value="{{ part.quantity }}">
+    {% if errors.quantity %}<span class="field-error">{{ errors.quantity }}</span>{% endif %}
+  </div>
+
+  <div class="form-row">
+    <label for="purchase_price">Purchase price</label>
+    <input type="number" id="purchase_price" name="purchase_price" min="0" step="0.0001"
+           value="{{ part.purchase_price if part.purchase_price is not none else '' }}">
+    {% if errors.purchase_price %}<span class="field-error">{{ errors.purchase_price }}</span>{% endif %}
+  </div>
+
+  <div class="form-row">
+    <label for="currency">Currency</label>
+    <input type="text" id="currency" name="currency" maxlength="3"
+           value="{{ part.currency or 'EUR' }}">
+    {% if errors.currency %}<span class="field-error">{{ errors.currency }}</span>{% endif %}
+  </div>
+
+  <div class="form-row form-row-wide">
+    <label for="datasheet_url">Datasheet URL</label>
+    <input type="url" id="datasheet_url" name="datasheet_url" maxlength="500"
+           value="{{ part.datasheet_url or '' }}">
+    {% if errors.datasheet_url %}<span class="field-error">{{ errors.datasheet_url }}</span>{% endif %}
+  </div>
+
+  <div class="form-row form-row-wide">
+    <label for="notes">Notes</label>
+    <textarea id="notes" name="notes" rows="3" maxlength="2000">{{ part.notes or '' }}</textarea>
+    {% if errors.notes %}<span class="field-error">{{ errors.notes }}</span>{% endif %}
+  </div>
+
+  <div class="form-actions">
+    <button type="submit">Save</button>
+    <a href="/" class="button-secondary">Cancel</a>
+  </div>
+</form>
+
+{% if mode == "edit" %}
+<form method="post" action="/parts/{{ part.id }}/delete" class="delete-form"
+      onsubmit="return confirm('Delete this part?')">
+  <button type="submit" class="button-danger">Delete part</button>
+</form>
+{% endif %}
+{% endblock %}

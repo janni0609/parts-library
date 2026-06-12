@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Categories</h2>
+
+{% if error %}<p class="error-banner">{{ error }}</p>{% endif %}
+
+<table class="categories-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Parts</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in categories %}
+    <tr>
+      <td>
+        <form method="post" action="/categories/{{ c.id }}/rename" class="inline-form">
+          <input type="text" name="name" value="{{ c.name }}" required maxlength="100">
+          <button type="submit">Rename</button>
+        </form>
+      </td>
+      <td>{{ c.part_count }}</td>
+      <td>
+        <form method="post" action="/categories/{{ c.id }}/delete" class="inline-form"
+              onsubmit="return confirm('Delete category {{ c.name }}?')">
+          <button type="submit" class="button-danger"
+                  {% if c.part_count > 0 %}disabled title="In use by {{ c.part_count }} part(s)"{% endif %}>
+            Delete
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="empty">No categories yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Add category</h3>
+<form method="post" action="/categories" class="inline-form">
+  <input type="text" name="name" placeholder="Category name" required maxlength="100">
+  <button type="submit">Add</button>
+</form>
+
+<p><a href="/">&larr; Back to parts</a></p>
+{% endblock %}

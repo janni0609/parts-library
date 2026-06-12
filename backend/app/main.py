@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from .database import init_db
-from .routers import categories, parts, ui
+from .routers import categories, categories_ui, parts, parts_forms, ui
 from .templating import STATIC_DIR
 
 
@@ -23,6 +23,8 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 app.include_router(categories.router)
 app.include_router(parts.router)
 app.include_router(ui.router)
+app.include_router(parts_forms.router)
+app.include_router(categories_ui.router)
 
 
 @app.get("/api/health", tags=["meta"])
