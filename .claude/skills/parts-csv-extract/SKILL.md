@@ -29,12 +29,25 @@ into a `.csv` file — don't add commentary inside the CSV itself.
   (e.g. "Texas Instruments", "Vishay", "Würth Elektronik"). Leave blank if you
   can't tell.
 - **description** — a short, human-readable description of what the part is
-  (e.g. "Dual op-amp", "100 nF ceramic capacitor", "2.54mm 4-pin header").
-- **category** — a short category name for grouping (e.g. "Opamps",
-  "Capacitors", "Resistors", "Connectors", "Microcontrollers", "Diodes"). If
-  the user tells you their existing category names, prefer reusing those
-  (matching is case-insensitive). Otherwise pick the most natural name — the
-  import preview will flag any category name that doesn't exist yet so the
+  (e.g. "Dual op-amp", "100 nF ceramic capacitor", "2.54mm 4-pin header"). the description should be useful. for example for opamps mention supply voltage, offset voltage, GBP... search the web if necessary
+- **category** — a short category name for grouping. **Prefer reusing one of
+  the user's existing categories below** (matching is case-insensitive). Use
+  the most specific (sub)category that fits — e.g. an LM358 op-amp → `Opamps`,
+  not `ICs`; a 100 nF ceramic cap → `Ceramic`, not `Capacitors`. Fall back to
+  the top-level category when no subcategory fits (e.g. a generic logic-level
+  resistor → `Resistors`). The current categories are:
+
+  - **Capacitors** → Ceramic, Electrolytic
+  - **Connectors**
+  - **Diodes** → LEDs, TVS, Zener
+  - **ICs** → ADCs, Comparators, DACs, Logic Gates, Microcontrollers, Opamps
+  - **Inductors & Transformers** → Inductors
+  - **Power** → Fuses, LDO, Switching regulators
+  - **Resistors**
+  - **Transistors** → BJTs, Fets
+
+  If a part genuinely doesn't fit any of these, pick the most natural new name
+  — the import preview will flag any category that doesn't exist yet so the
   user can map it or create it. Don't leave this blank if you can reasonably
   guess the part type.
 - **package** — the footprint/package code if visible or inferable (e.g.
@@ -48,7 +61,7 @@ into a `.csv` file — don't add commentary inside the CSV itself.
 - **purchase_price** — only if the user tells you a price; otherwise leave
   blank. Use `.` as the decimal separator.
 - **currency** — `EUR` by default if a price is given; otherwise leave blank.
-- **datasheet_url** — only include a URL if you're confident it's correct for
+- **datasheet_url** —find a datasheet! only include a URL if you're confident it's correct for
   this exact part; otherwise leave blank rather than guessing.
 - **notes** — anything worth flagging: uncertain readings, "marking partially
   worn", condition, etc. Leave blank if there's nothing notable.
@@ -63,7 +76,7 @@ into a `.csv` file — don't add commentary inside the CSV itself.
 
 ## Output
 
-Just the CSV (header + one row per part). If several fields are uncertain,
+Just the CSV as download (header + one row per part). If several fields are uncertain,
 ask the user a quick clarifying question before finalizing rather than
 guessing wildly — but don't block on fields like `location` or
 `datasheet_url` that are fine left blank.
