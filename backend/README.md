@@ -39,3 +39,8 @@ run (the file is git-ignored — it's your local data, not source).
 - `purchase_price` is a float; `currency` defaults to `EUR`.
 - A part's `category_id` is validated on create/update — unknown ids are rejected.
 - Deleting a category that still has parts returns `409` with the count.
+
+## Deployment
+
+For running this as a systemd service on a Raspberry Pi (with periodic SQLite
+backups), see [deploy/README.md](../deploy/README.md).

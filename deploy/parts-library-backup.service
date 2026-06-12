@@ -1,0 +1,8 @@
+[Unit]
+Description=Back up the parts-library SQLite database
+
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/parts-library/backend
+ExecStart=/home/pi/parts-library/backend/.venv/bin/python scripts/backup_db.py /mnt/backup/parts-library --keep 14

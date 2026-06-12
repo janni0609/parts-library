@@ -113,6 +113,8 @@ subscription.
 - systemd service for the FastAPI app (uvicorn on a fixed LAN port)
 - Reach it from other devices via the Pi's hostname/IP on the local network
 - SQLite file backups (e.g. periodic copy to another location)
+- See [deploy/README.md](deploy/README.md) for the systemd units, backup
+  script, and setup steps.
 
 ### Phase 6 — Optional extras
 - Tailscale for secure remote access to the inventory from outside the home

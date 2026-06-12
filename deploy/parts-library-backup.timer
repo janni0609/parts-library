@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily backup of the parts-library database
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
