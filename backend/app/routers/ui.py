@@ -67,6 +67,7 @@ def _grouped_parts(session: Session, q, category_id, in_stock):
         parent = by_id.get(cat.parent_id) if depth == 1 else None
         groups.append(
             {
+                "id": cat.id,
                 "name": cat.name,
                 "parent_name": parent.name if parent else None,
                 "level": depth,
@@ -76,7 +77,13 @@ def _grouped_parts(session: Session, q, category_id, in_stock):
 
     if buckets.get(None):
         groups.append(
-            {"name": "Uncategorized", "parent_name": None, "level": 0, "parts": buckets[None]}
+            {
+                "id": "none",
+                "name": "Uncategorized",
+                "parent_name": None,
+                "level": 0,
+                "parts": buckets[None],
+            }
         )
 
     return groups

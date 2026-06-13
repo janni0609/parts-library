@@ -94,6 +94,17 @@ body {
   text-decoration: underline;
 }
 
+.table-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.table-toolbar #collapse-all {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.7rem;
+}
+
 /* Category groups */
 .category-group {
   margin-bottom: 0.75rem;
