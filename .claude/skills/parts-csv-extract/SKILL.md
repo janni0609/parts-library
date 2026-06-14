@@ -40,9 +40,10 @@ into a `.csv` file — don't add commentary inside the CSV itself.
   - **Capacitors** → Ceramic, Electrolytic
   - **Connectors**
   - **Diodes** → LEDs, TVS, Zener
-  - **ICs** → ADCs, Comparators, DACs, Logic Gates, Microcontrollers, Opamps
+  - **ICs** → ADCs, Analog Switches, Comparators, DACs, Digital Isolators, Logic Gates, Microcontrollers, Opamps
   - **Inductors & Transformers** → Inductors
   - **Power** → Fuses, LDO, Switching regulators
+  - **Relays**
   - **Resistors**
   - **Transistors** → BJTs, Fets
 
@@ -51,7 +52,7 @@ into a `.csv` file — don't add commentary inside the CSV itself.
   user can map it or create it. Don't leave this blank if you can reasonably
   guess the part type.
 - **package** — the footprint/package code if visible or inferable (e.g.
-  `DIP-8`, `SOT-23`, `0805`, `TO-220`, `SOIC-8`).
+  `DIP-8`, `SOT-23`, `0805`, `TO-220`, `SOIC-8`). look for it in the datasheet if you can identify the part but the package isn't clear from the photo. Leave blank if you can't tell.
 - **location** — leave blank unless the user tells you where they're storing
   these parts (you can't see this from a photo).
 - **quantity** — the number of **new units being added in this batch** (how
