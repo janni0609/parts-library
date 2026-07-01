@@ -16,12 +16,23 @@ from ..category_tree import (
 )
 from ..database import get_session
 from ..models import Category, Part, utcnow
+from ..search import compile_filter
 from ..templating import templates
 
 router = APIRouter(include_in_schema=False)
 
+# Per-field advanced filters: form field name -> Part column. Each accepts a
+# boolean expression (e.g. ``0603 & !0402``); see ``search.compile_filter``.
+FIELD_COLUMNS = {
+    "article_number": Part.article_number,
+    "manufacturer": Part.manufacturer,
+    "description": Part.description,
+    "package": Part.package,
+    "location": Part.location,
+}
 
-def _build_query(q, category_id, in_stock, categories: list[Category]):
+
+def _build_query(q, category_id, in_stock, fields: dict, categories: list[Category]):
     stmt = select(Part)
     if q:
         like = f"%{q}%"
@@ -32,6 +43,10 @@ def _build_query(q, category_id, in_stock, categories: list[Category]):
                 Part.manufacturer.ilike(like),
             )
         )
+    for name, column in FIELD_COLUMNS.items():
+        cond = compile_filter(fields.get(name), column)
+        if cond is not None:
+            stmt = stmt.where(cond)
     if category_id == "none":
         stmt = stmt.where(Part.category_id.is_(None))
     elif category_id:
@@ -45,7 +60,7 @@ def _build_query(q, category_id, in_stock, categories: list[Category]):
     return stmt.order_by(Part.article_number)
 
 
-def _grouped_parts(session: Session, q, category_id, in_stock):
+def _grouped_parts(session: Session, q, category_id, in_stock, fields):
     """Parts as ordered groups: each top-level category, then its subcategories.
 
     Subcategory groups carry the parent name for a breadcrumb header. Groups
@@ -53,7 +68,9 @@ def _grouped_parts(session: Session, q, category_id, in_stock):
     """
     categories = load_categories(session)
     by_id = {c.id: c for c in categories}
-    parts = session.exec(_build_query(q, category_id, in_stock, categories)).all()
+    parts = session.exec(
+        _build_query(q, category_id, in_stock, fields, categories)
+    ).all()
 
     buckets: dict = {}
     for part in parts:
@@ -110,17 +127,30 @@ def index(
     q: Optional[str] = None,
     category_id: Optional[str] = None,
     in_stock: Optional[str] = None,
+    article_number: Optional[str] = None,
+    manufacturer: Optional[str] = None,
+    description: Optional[str] = None,
+    package: Optional[str] = None,
+    location: Optional[str] = None,
     session: Session = Depends(get_session),
 ):
+    fields = {
+        "article_number": article_number,
+        "manufacturer": manufacturer,
+        "description": description,
+        "package": package,
+        "location": location,
+    }
     return templates.TemplateResponse(
         request,
         "index.html",
         {
-            "groups": _grouped_parts(session, q, category_id, in_stock),
+            "groups": _grouped_parts(session, q, category_id, in_stock, fields),
             "categories": _category_options(session),
             "q": q or "",
             "category_id": category_id or "",
             "in_stock": in_stock or "",
+            "fields": {k: v or "" for k, v in fields.items()},
         },
     )
 
@@ -131,12 +161,24 @@ def parts_table(
     q: Optional[str] = None,
     category_id: Optional[str] = None,
     in_stock: Optional[str] = None,
+    article_number: Optional[str] = None,
+    manufacturer: Optional[str] = None,
+    description: Optional[str] = None,
+    package: Optional[str] = None,
+    location: Optional[str] = None,
     session: Session = Depends(get_session),
 ):
+    fields = {
+        "article_number": article_number,
+        "manufacturer": manufacturer,
+        "description": description,
+        "package": package,
+        "location": location,
+    }
     return templates.TemplateResponse(
         request,
         "partials/parts_table.html",
-        {"groups": _grouped_parts(session, q, category_id, in_stock)},
+        {"groups": _grouped_parts(session, q, category_id, in_stock, fields)},
     )
 
 

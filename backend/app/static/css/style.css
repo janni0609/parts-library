@@ -54,9 +54,8 @@ body {
 /* Filter bar */
 #filters {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.5rem;
-  align-items: center;
   margin-bottom: 1rem;
   position: sticky;
   top: 0;
@@ -65,11 +64,49 @@ body {
   z-index: 10;
 }
 
-#filters input[type="search"] {
-  flex: 1 1 16rem;
-  padding: 0.4rem 0.6rem;
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
+.filter-row input[type="search"] {
+  flex: 1 1 16rem;
+}
+
+/* Per-field advanced filters: a table that mirrors the parts-table columns so
+   each input sits directly above the column it filters. */
+.filter-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.filter-table td {
+  padding: 0 0.6rem;
+  border: none;
+}
+
+#filters .filter-table input[type="search"] {
+  width: 100%;
+  padding: 0.35rem 0.45rem;
+  font-size: 0.9rem;
+}
+
+.filter-hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted, GrayText);
+}
+
+.filter-hint code {
+  background: var(--code-bg, rgba(128, 128, 128, 0.15));
+  padding: 0 0.25rem;
+  border-radius: 3px;
+}
+
+#filters input[type="search"],
 #filters select {
   padding: 0.4rem 0.6rem;
 }

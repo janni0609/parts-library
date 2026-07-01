@@ -5,25 +5,60 @@
       hx-get="/ui/parts"
       hx-target="#parts-table"
       hx-swap="innerHTML"
-      hx-trigger="input changed delay:300ms from:#search, change from:select">
-  <input type="search" id="search" name="q" placeholder="Search article number, description, manufacturer..."
-         value="{{ q }}" autocomplete="off">
+      hx-trigger="input changed delay:300ms from:input, change from:select">
+  <div class="filter-row">
+    <input type="search" id="search" name="q" placeholder="Search article number, description, manufacturer..."
+           value="{{ q }}" autocomplete="off">
 
-  <select name="category_id">
-    <option value="">All categories</option>
-    {% for c in categories %}
-    <option value="{{ c.id }}" {% if category_id == c.id|string %}selected{% endif %}>{{ "↳ " if c.depth else "" }}{{ c.name }} ({{ c.part_count }})</option>
-    {% endfor %}
-    <option value="none" {% if category_id == "none" %}selected{% endif %}>Uncategorized</option>
-  </select>
+    <select name="category_id">
+      <option value="">All categories</option>
+      {% for c in categories %}
+      <option value="{{ c.id }}" {% if category_id == c.id|string %}selected{% endif %}>{{ "↳ " if c.depth else "" }}{{ c.name }} ({{ c.part_count }})</option>
+      {% endfor %}
+      <option value="none" {% if category_id == "none" %}selected{% endif %}>Uncategorized</option>
+    </select>
 
-  <select name="in_stock">
-    <option value="">All stock levels</option>
-    <option value="true" {% if in_stock == "true" %}selected{% endif %}>In stock</option>
-    <option value="false" {% if in_stock == "false" %}selected{% endif %}>Out of stock</option>
-  </select>
+    <select name="in_stock">
+      <option value="">All stock levels</option>
+      <option value="true" {% if in_stock == "true" %}selected{% endif %}>In stock</option>
+      <option value="false" {% if in_stock == "false" %}selected{% endif %}>Out of stock</option>
+    </select>
 
-  <a href="/" class="reset-link">Reset</a>
+    <a href="/" class="reset-link">Reset</a>
+  </div>
+
+  <table class="filter-table">
+    <colgroup>
+      <col class="col-article">
+      <col class="col-manufacturer">
+      <col class="col-description">
+      <col class="col-package">
+      <col class="col-location">
+      <col class="col-qty">
+      <col class="col-price">
+      <col class="col-datasheet">
+      <col class="col-actions">
+    </colgroup>
+    <tbody>
+      <tr>
+        <td><input type="search" name="article_number" value="{{ fields.article_number }}"
+                   placeholder="Article #" title="e.g. 0603 &amp; !0402" autocomplete="off"></td>
+        <td><input type="search" name="manufacturer" value="{{ fields.manufacturer }}"
+                   placeholder="Manufacturer" title="e.g. TDK | Murata" autocomplete="off"></td>
+        <td><input type="search" name="description" value="{{ fields.description }}"
+                   placeholder="Description" title="e.g. capacitor &amp; !tantalum" autocomplete="off"></td>
+        <td><input type="search" name="package" value="{{ fields.package }}"
+                   placeholder="Package" title="e.g. 0603 &amp; !0402" autocomplete="off"></td>
+        <td><input type="search" name="location" value="{{ fields.location }}"
+                   placeholder="Location" title="e.g. A1 | B2" autocomplete="off"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="filter-hint">Filters align to their columns. Each accepts <code>&amp;</code> (and), <code>|</code> (or), <code>!</code> (not) and <code>"quoted phrases"</code>.</p>
 </form>
 
 <div class="table-toolbar">

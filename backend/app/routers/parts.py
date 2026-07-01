@@ -9,8 +9,20 @@ from sqlmodel import Session, select
 from ..database import get_session
 from ..models import Category, Part, utcnow
 from ..schemas import PartCreate, PartRead, PartUpdate
+from ..search import compile_filter
 
 router = APIRouter(prefix="/api/parts", tags=["parts"])
+
+# Per-field filters accepting boolean expressions (e.g. ``0603 & !0402``).
+FIELD_COLUMNS = {
+    "article_number": Part.article_number,
+    "manufacturer": Part.manufacturer,
+    "description": Part.description,
+    "package": Part.package,
+    "location": Part.location,
+}
+
+_EXPR_HELP = "Boolean expression filter, e.g. `0603 & !0402` (& = and, | = or, ! = not)"
 
 
 def _category_map(session: Session) -> dict[int, str]:
@@ -39,6 +51,11 @@ def list_parts(
     in_stock: Optional[bool] = Query(
         default=None, description="true = quantity > 0, false = out of stock"
     ),
+    article_number: Optional[str] = Query(default=None, description=_EXPR_HELP),
+    manufacturer: Optional[str] = Query(default=None, description=_EXPR_HELP),
+    description: Optional[str] = Query(default=None, description=_EXPR_HELP),
+    package: Optional[str] = Query(default=None, description=_EXPR_HELP),
+    location: Optional[str] = Query(default=None, description=_EXPR_HELP),
 ):
     stmt = select(Part)
     if q:
@@ -50,6 +67,17 @@ def list_parts(
                 Part.manufacturer.ilike(like),
             )
         )
+    field_values = {
+        "article_number": article_number,
+        "manufacturer": manufacturer,
+        "description": description,
+        "package": package,
+        "location": location,
+    }
+    for name, column in FIELD_COLUMNS.items():
+        cond = compile_filter(field_values.get(name), column)
+        if cond is not None:
+            stmt = stmt.where(cond)
     if category_id is not None:
         stmt = stmt.where(Part.category_id == category_id)
     if in_stock is True:
