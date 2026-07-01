@@ -18,3 +18,20 @@ def _trimzeros(value: str) -> str:
 
 
 templates.env.filters["trimzeros"] = _trimzeros
+
+
+def _static_url(path: str) -> str:
+    """Static URL with an mtime-based ``?v=`` query for cache busting.
+
+    Without this, browsers (notably on the Pi) keep serving a cached
+    stylesheet/script after a deploy. Tying the query to the file's mtime means
+    the URL changes whenever the file does, forcing a fresh fetch.
+    """
+    try:
+        version = int((STATIC_DIR / path).stat().st_mtime)
+    except OSError:
+        version = 0
+    return f"/static/{path}?v={version}"
+
+
+templates.env.globals["static_url"] = _static_url
